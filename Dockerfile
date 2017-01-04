@@ -1,8 +1,15 @@
 FROM alpine:3.5
 
-RUN apk add --no-cache ruby ca-certificates
-
-RUN gem install --no-document papertrail
-RUN gem install --no-document json
+RUN apk --no-cache --update add \
+      ca-certificates \
+      build-base \
+      ruby \
+      ruby-irb \
+      ruby-dev && \
+    echo 'gem: --no-document' >> /etc/gemrc && \
+    gem install papertrail && \
+    gem install json && \
+    apk del build-base ruby-dev && \
+    rm -rf /tmp/* /var/tmp/* /var/cache/apk/* /usr/lib/ruby/gems/*/cache/*.gem
 
 ENTRYPOINT ["papertrail"]
